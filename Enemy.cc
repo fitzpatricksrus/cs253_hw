@@ -10,7 +10,7 @@
 static std::string NAME_KEY = "Name";
 static std::string LINK_KEY_PREFIX = "Link";
 
-bool isBlank(std::string s){
+static bool isBlank(std::string s){
     for(char c : s){
         if(!isspace(c)){
             return false;
@@ -19,7 +19,7 @@ bool isBlank(std::string s){
     return true;
 }
 
-bool isAlphaNum(std::string s){
+static bool isAlphaNum(std::string s){
     for(char c : s){
         if(!isalnum(c)){
             return false;
@@ -28,7 +28,7 @@ bool isAlphaNum(std::string s){
     return true;
 }
 
-std::string removeLeadingSpaces(std::string s){
+static std::string removeLeadingSpaces(std::string s){
     std::string r = s;
     for(char c : s){
         if(isspace(c)){
@@ -41,7 +41,7 @@ std::string removeLeadingSpaces(std::string s){
     return r;
 }
 
-std::string removeTrailingSpaces(std::string s){
+static std::string removeTrailingSpaces(std::string s){
     std::string r = s;
     for(int i = s.size()-1; i >= 0; i--){
         if(isspace(s[i])){
@@ -54,7 +54,7 @@ std::string removeTrailingSpaces(std::string s){
     return r;
 }
 
-std::string formatEnemy(std::string key, std::string val, size_t maxsize){
+static std::string formatEnemy(std::string key, std::string val, size_t maxsize){
     std::string s;
     s+= key;
     for(size_t i = key.length(); i <= maxsize; i++)

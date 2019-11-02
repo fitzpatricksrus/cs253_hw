@@ -31,7 +31,7 @@ Gallery::Gallery(const string &s1, const string &s2, const string &s3, const str
 {
 }
 
-std::string findKeyFileName(std::vector<std::string>& files) {
+static std::string findKeyFileName(std::vector<std::string>& files) {
 	for (size_t i = 0; i < files.size(); i++) {
 		std::string keyFileName = files[i];
 		try {
@@ -58,15 +58,6 @@ Gallery::Gallery(std::vector<std::string> files) {
 		for (size_t j = 0; j < files.size(); j++) {
 			read(files[j], keyFileName);
 		}
-	}
-}
-
-bool readAnEnemy(Enemy& enemy, std::ifstream& enemyStream) {
-	try {
-		return enemy.read(enemyStream);
-	} catch (std::runtime_error& err) {
-		// enemy read but invalid
-		return true;
 	}
 }
 
