@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "enemy.h"
+#include "Enemy.h"
 
 bool isBlank(std::string s){
     for(char c : s){
@@ -63,7 +63,7 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
 
 
 
-    enemy::enemy(std::string keyfile){
+    Enemy::Enemy(std::string keyfile){
         std::string line;
         std::ifstream input(keyfile);
         if(input.fail()){
@@ -80,7 +80,7 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
 
 
 
-    bool enemy::read(std::istream &in){
+    bool Enemy::read(std::istream &in){
         clear();
         std::string line;
         while(getline(in, line)){
@@ -88,7 +88,7 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
             removeTrailingSpaces(line);
             if(isBlank(line)){                           //if line is empty after whitespace removed, line is blank
                 if(keys.size() == 0){
-                    return false;                       //no keys/values read. No enemy found :)
+                    return false;                       //no keys/values read. No Enemy found :)
                 }
                 if(!std::count(keys.begin(), keys.end(), "Name")){
                     throw std::runtime_error("Enemy: missing name key!\n");
@@ -128,7 +128,7 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
         }
         return true;
     }
-    void enemy::write(std::ostream &out){
+    void Enemy::write(std::ostream &out) const {
         size_t maxsize = 0;
         for(size_t q = 0; q < keys.size(); q++){
             if(keys.at(q).size() > maxsize){
@@ -171,48 +171,45 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
             }
         }
     }
-    void enemy::write(std::string filename){
+    void Enemy::write(std::string filename) const {
         std::ofstream file;
         file.open(filename);
         if(file.bad()){
             throw std::runtime_error("Enemy: Failed to open file " + filename);
         }
-        enemy::write(file);
+        Enemy::write(file);
         file.close();
     }
-    std::string enemy::field(std::string key){
+    std::string Enemy::field(std::string key) const {
         if(!std::count(keys.begin(), keys.end(), key)){
-            throw std::range_error("Enemy: key \"" + key + "\" not contained in this enemy");
+            throw std::range_error("Enemy: key \"" + key + "\" not contained in this Enemy");
         }
         return values.at(std::distance(keys.begin(), std::find(keys.begin(), keys.end(), key)));
     }
-    void enemy::show_name(bool b){
+    void Enemy::show_name(bool b){
         nameflag = b;
     }
-    void enemy::show_other(bool b){
+    void Enemy::show_other(bool b){
         otherflag = b;
     }
-    void enemy::show_link(bool b){
+    void Enemy::show_link(bool b){
         linkflag = b;
     }
-    void enemy::clear(){
+    void Enemy::clear(){
         keys.clear();
         values.clear();
     }
-    size_t enemy::size(){
+    size_t Enemy::size() const {
         return keys.size();
     }
-    bool enemy::empty(){
-        if(keys.size() == 0){
-            return true;
-        }
-        return false;
+    bool Enemy::empty() const {
+    	return keys.size() == 0;
     }
 
 
 
 
-std::ostream &operator<<(std::ostream &out, enemy e) {
+std::ostream &operator<<(std::ostream &out, Enemy e) {
     e.write(out);
     return out;
 }

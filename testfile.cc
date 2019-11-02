@@ -3,12 +3,12 @@
 //
 #include <iostream>
 #include <fstream>
-#include "enemy.h"
+#include "Enemy.h"
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    enemy e,f;
+    Enemy e,f;
     std::ifstream keyStream("in1");
     e.read(keyStream);
     std::cout << e;

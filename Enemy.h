@@ -3,24 +3,24 @@
 //
 #include <vector>
 
-class enemy{
+class Enemy {
 private:
     std::vector<std::string> keys, values, allowedkeys;
     bool nameflag = true, otherflag = true, linkflag = true;
 public:
-    enemy() = default;
-    ~enemy() = default;
-    enemy(std::string keyfile);
+    Enemy() = default;
+    ~Enemy() = default;
+    Enemy(std::string keyfile);
     bool read(std::istream &in);
-    void write(std::ostream &out);
-    void write(std::string filename);
-    std::string field(std::string key);
+    void write(std::ostream &out) const;
+    void write(std::string filename) const;
+    std::string field(std::string key) const;
     void show_name(bool b);
     void show_other(bool b);
     void show_link(bool b);
     void clear();
-    size_t size();
-    bool empty();
+    size_t size() const;
+    bool empty() const;
 
 };
-std::ostream &operator<<(std::ostream &out, enemy e);
+std::ostream &operator<<(std::ostream &out, Enemy e);
