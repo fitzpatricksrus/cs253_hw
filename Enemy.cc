@@ -92,9 +92,6 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
             //todo: check if the input failed
             removeTrailingSpaces(line);
             if(isBlank(line)){                           //if line is empty after whitespace removed, line is blank
-                if(keys.size() == 0){
-                    return false;                       //no keys/values read. No Enemy found :)
-                }
                 if(!std::count(keys.begin(), keys.end(), NAME_KEY)){
                     throw std::runtime_error("Enemy: missing name key!\n");
                 }
@@ -112,7 +109,7 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
                     keys.push_back(word);
                 }                                        //todo: error if not in supplied keyfile
                 else if(std::count(allowedkeys.begin(), allowedkeys.end(), word)){
-                    std::cout << word;
+//                    std::cout << word;
                     keys.push_back(word);
                 }
                 else{       //invalid key
@@ -131,8 +128,16 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
             }
 
         }
-        return true;
+        // ensure we were able to at least read the Name field
+        if (keys.empty()) {
+        	return false;
+        } else if(!std::count(keys.begin(), keys.end(), NAME_KEY)){
+			throw std::runtime_error("Enemy: missing name key!\n");
+		} else {
+        	return true;
+        }
     }
+
     void Enemy::write(std::ostream &out) const {
         size_t maxsize = 0;
         for(size_t q = 0; q < keys.size(); q++){

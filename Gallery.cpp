@@ -31,25 +31,43 @@ Gallery::Gallery(const string &s1, const string &s2, const string &s3, const str
 {
 }
 
-Gallery::Gallery(std::vector<std::string> files) {
+std::string findKeyFileName(std::vector<std::string>& files) {
 	for (size_t i = 0; i < files.size(); i++) {
+		std::string keyFileName = files[i];
 		try {
-			std::string keyFileName = files[i];
+			// try to parse the file as a key file
 			Enemy e(keyFileName);
-			//if we got here, we found a key file.  We only get here at most once.
-			//remove key file from the file list so the remaining list is just enemies
+			// if it worked, remove the file name from the files list and return it
 			files.erase(files.begin() + i, files.begin() + i + 1);
-			//now load enemies files
-			for (size_t j = 0; j < files.size(); j++) {
-				read(files[i], keyFileName);
-			}
-			return;	// exit the outer for loop and constructor
-		} catch (std::runtime_error& err) {
+			return keyFileName;
+		} catch (std::runtime_error &err) {
 			// not a key file, so keep going.
 		}
 	}
-	//we checked all the files and did not find a key file.  Kaboom!
-	throw std::runtime_error("Missing key file.");
+	// we didn't find a key file so we just return and empty string file name
+	return "";
+}
+
+Gallery::Gallery(std::vector<std::string> files) {
+	std::string keyFileName = findKeyFileName(files);
+	if (keyFileName.empty()) {
+		//we checked all the files and did not find a key file.  Kaboom!
+		throw std::runtime_error("Missing key file.");
+	} else {
+		//load the enemies.
+		for (size_t j = 0; j < files.size(); j++) {
+			read(files[j], keyFileName);
+		}
+	}
+}
+
+bool readAnEnemy(Enemy& enemy, std::ifstream& enemyStream) {
+	try {
+		return enemy.read(enemyStream);
+	} catch (std::runtime_error& err) {
+		// enemy read but invalid
+		return true;
+	}
 }
 
 void Gallery::read(const string &filename, const string &keyfilename) {
@@ -58,11 +76,18 @@ void Gallery::read(const string &filename, const string &keyfilename) {
 	if(enemyStream.fail()){
 		throw std::runtime_error("Gallery: Could not find file: " + filename + '\n');
 	}
-	bool enemyRead = e.read(enemyStream);
-	while (enemyRead) {
-		add(e);
-		enemyRead = e.read(enemyStream);
-	}
+
+	bool enemyRead;
+	do {
+		try {
+			enemyRead = e.read(enemyStream);
+			if (enemyRead) {
+				add(e);
+			}
+		} catch (std::runtime_error& err) {
+			enemyRead = true;
+		}
+	} while (enemyRead);
 	enemyStream.close();
 }
 
