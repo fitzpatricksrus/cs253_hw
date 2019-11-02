@@ -39,15 +39,9 @@ Gallery::Gallery(std::vector<std::string> files) {
 			//if we got here, we found a key file.  We only get here at most once.
 			//remove key file from the file list so the remaining list is just enemies
 			files.erase(files.begin() + i, files.begin() + i + 1);
-			//now load enemies
+			//now load enemies files
 			for (size_t j = 0; j < files.size(); j++) {
-				std::ifstream enemyStream(files[i]);
-				bool enemyRead = e.read(enemyStream);
-				while (enemyRead) {
-					add(e);
-					enemyRead = e.read(enemyStream);
-				}
-				enemyStream.close();
+				read(files[i], keyFileName);
 			}
 			return;	// exit the outer for loop and constructor
 		} catch (std::runtime_error& err) {
@@ -59,6 +53,17 @@ Gallery::Gallery(std::vector<std::string> files) {
 }
 
 void Gallery::read(const string &filename, const string &keyfilename) {
+	Enemy e(keyfilename);	//throws std::runtime_error if can't load key file
+	std::ifstream enemyStream(filename);
+	if(enemyStream.fail()){
+		throw std::runtime_error("Gallery: Could not find file: " + filename + '\n');
+	}
+	bool enemyRead = e.read(enemyStream);
+	while (enemyRead) {
+		add(e);
+		enemyRead = e.read(enemyStream);
+	}
+	enemyStream.close();
 }
 
 void Gallery::add(const Enemy& enemy) {
@@ -76,7 +81,7 @@ size_t Gallery::size() const {
 }
 
 bool Gallery::empty() const {
-	return enemies.size() == 0;
+	return enemies.empty();
 }
 
 const Enemy* Gallery::get(size_t n) const {
