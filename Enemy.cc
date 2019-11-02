@@ -124,7 +124,11 @@ static std::string formatEnemy(std::string key, std::string val, size_t maxsize)
 
                 line = removeTrailingSpaces(line);
                 line = removeLeadingSpaces(line);
-                values.back() += " " + line;
+                if (values.back().empty()) {
+                	values.back() = line;
+                } else {
+					values.back() += " " + line;
+				}
             }
 
         }
