@@ -7,9 +7,10 @@
 
 #include <string>
 #include <vector>
-#include "Enemy.h"
 
 using std::string;
+//class Enemy;
+#include "Enemy.h"
 
 class Gallery {
 public:
@@ -20,14 +21,14 @@ public:
 	Gallery(const string& s1, const string& s2, const string& s3, const string& s4, const string& s5, const string& s6);
 	Gallery(std::vector<std::string> files);
 
-	Gallery(const Gallery& other);
-	Gallery& operator=(const Gallery& other);
-	virtual ~Gallery();
+	Gallery(const Gallery& other) = default;
+	Gallery& operator=(const Gallery& other) = default;
+	virtual ~Gallery() = default;
 
 	void read(const string& filename, const string& keyfilename);
 	void add(const Enemy& enemy);
 	void clear();
-	void size() const;
+	size_t size() const;
 	bool empty() const;
 	const Enemy* get(size_t n) const;
 	Enemy* get(size_t n);

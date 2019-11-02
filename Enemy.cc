@@ -5,6 +5,10 @@
 #include <fstream>
 #include <sstream>
 #include "Enemy.h"
+#include "Gallery.h"
+
+static std::string NAME_KEY = "Name";
+static std::string LINK_KEY_PREFIX = "Link";
 
 bool isBlank(std::string s){
     for(char c : s){
@@ -63,6 +67,7 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
 
 
 
+
     Enemy::Enemy(std::string keyfile){
         std::string line;
         std::ifstream input(keyfile);
@@ -90,7 +95,7 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
                 if(keys.size() == 0){
                     return false;                       //no keys/values read. No Enemy found :)
                 }
-                if(!std::count(keys.begin(), keys.end(), "Name")){
+                if(!std::count(keys.begin(), keys.end(), NAME_KEY)){
                     throw std::runtime_error("Enemy: missing name key!\n");
                 }
                 return true;
@@ -198,6 +203,7 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
     void Enemy::clear(){
         keys.clear();
         values.clear();
+        gallery = nullptr;
     }
     size_t Enemy::size() const {
         return keys.size();
@@ -206,7 +212,29 @@ std::string formatEnemy(std::string key, std::string val, size_t maxsize){
     	return keys.size() == 0;
     }
 
+	Enemy* Enemy::link(std::string relation) const {
+    	if (gallery == nullptr) {
+    		throw std::runtime_error(field(NAME_KEY) + " is not part of a gallery");
+    	} else {
+    		try {
+				std::string linkName = field(LINK_KEY_PREFIX + relation);
+				for (size_t i = 0; i < gallery->size(); i++) {
+					Enemy* e = gallery->get(i);
+					std::string enemyName = e->field(NAME_KEY);	// should always work
+					if (linkName == enemyName) {
+						return e;
+					}
+				}
+				throw std::runtime_error(relation + " enemy named " + linkName + " not found");
+    		} catch (std::range_error& err) {
+				throw std::runtime_error(relation + " link not found");
+    		}
+    	}
+    }
 
+	void Enemy::setGallery(Gallery* galleryIn) {
+		gallery = galleryIn;
+	}
 
 
 std::ostream &operator<<(std::ostream &out, Enemy e) {
