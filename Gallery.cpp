@@ -107,7 +107,21 @@ const Enemy* Gallery::get(size_t n) const {
 Enemy* Gallery::get(size_t n) {
 	return &enemies[n];
 }
-
+const Enemy &Gallery::operator[](size_t index) const {
+	if (index < 0 || index >= enemies.size()) {
+		throw std::range_error("Gallery: index \"" + std::to_string(index) + "\" out of range");
+	}
+	return enemies[index];
+}
+Enemy &Gallery::operator[](size_t index) {
+	if (index < 0 || index >= enemies.size()) {
+		throw std::range_error("Gallery: index \"" + std::to_string(index) + "\" out of range");
+	}
+	return enemies[index];
+}
+Gallery::operator bool() const {
+	return !enemies.empty();
+}
 
 std::ostream& operator<<( std::ostream &os, const Gallery &gallery ) {
 	for (size_t i = 0; i < gallery.size(); i++) {

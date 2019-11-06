@@ -33,6 +33,11 @@ public:
 	const Enemy* get(size_t n) const;
 	Enemy* get(size_t n);
 
+	const Enemy &operator[](size_t ndx) const;
+	Enemy &operator[](size_t ndx);
+	operator bool() const;
+
+
 private:
 	std::vector<Enemy> enemies;
 };

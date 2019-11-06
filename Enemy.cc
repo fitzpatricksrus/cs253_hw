@@ -245,6 +245,46 @@ static std::string formatEnemy(std::string key, std::string val, size_t maxsize)
 		gallery = galleryIn;
 	}
 
+std::string Enemy::operator[](std::string key) const {
+	return field(key);
+}
+std::pair<std::string, std::string> Enemy::operator[](size_t index) const {
+	if (index < 0 || index >= keys.size()) {
+		throw std::range_error("Enemy: index \"" + std::to_string(index) + "\" out of range");
+	}
+
+	std::string key = keys[index];
+	return std::pair<std::string, std::string>(key, field(key));
+}
+Enemy::operator bool() const {
+	return !keys.empty();
+}
+bool Enemy::operator==(const Enemy &other) const {
+	if (this == &other) {
+		// always equal to self
+		return true;
+	} else if (size() != other.size()) {
+		// different sizes.  can't be equal.
+		return false;
+	} else {
+		// NOTE: this won't work if duplicate keys are allowed
+		for (const std::string &key : keys) {
+			try {
+				if (field(key) != other.field(key)) {
+					// value for key don't match
+					return false;
+				}
+			} catch (std::range_error &err) {
+				// other doesn't have the same keys
+				return false;
+			}
+		}
+	}
+	return true;
+}
+bool Enemy::operator!=(const Enemy &other) const {
+	return !(*this == other);
+}
 
 std::ostream &operator<<(std::ostream &out, Enemy e) {
     e.write(out);

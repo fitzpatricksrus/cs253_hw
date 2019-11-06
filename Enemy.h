@@ -30,6 +30,12 @@ public:
 
     Enemy* link(std::string relation) const;
     void setGallery(Gallery* gallery);
+
+	std::string operator[](std::string key) const;
+	std::pair<std::string, std::string> operator[](size_t index) const;
+	operator bool() const;
+	bool operator==(const Enemy &other) const;
+	bool operator!=(const Enemy &other) const;
 };
 std::ostream &operator<<(std::ostream &out, Enemy e);
 
